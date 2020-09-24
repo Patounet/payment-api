@@ -3,8 +3,6 @@ package com.portfolio.paymentapi.service;
 import com.portfolio.paymentapi.entity.Payment;
 import com.portfolio.paymentapi.exceptions.ResourceNotFoundException;
 import com.portfolio.paymentapi.repository.PaymentRepository;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,13 +24,9 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public Payment findPaymentById(Long id) {
-        Optional<Payment> payment = repository.findById(id);
-        if (payment.isPresent()) {
-            return payment.get();
-        } else {
-            throw new ResourceNotFoundException("Record not found with id : " + id);
-        }
+    public Optional<Payment> findPaymentById(Long id) {
+
+        return repository.findById(id);
     }
 
 
@@ -42,14 +36,9 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public Payment findByFirstNameAndLastName(String firstName, String lastName) {
+    public Optional<Payment> findByFirstNameAndLastName(String firstName, String lastName) {
+        return  repository.findOneByFirstNameAndLastName(firstName, lastName);
 
-        Optional<Payment> payment = repository.findOneByFirstNameAndLastName(firstName, lastName);
-        if (payment.isPresent()) {
-            return payment.get();
-        } else {
-            throw new ResourceNotFoundException("Record not found with name : " + firstName + " " + lastName);
-        }
     }
 
     @Override
@@ -60,7 +49,6 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public Payment savePayment(Payment payment) {
         return repository.save(payment);
-
     }
 
     @Override
@@ -88,6 +76,5 @@ public class PaymentServiceImpl implements PaymentService {
         } else {
             throw new ResourceNotFoundException("Record not found with id : " + id);
         }
-        ;
     }
 }

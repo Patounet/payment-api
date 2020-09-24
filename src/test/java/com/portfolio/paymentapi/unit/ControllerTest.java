@@ -13,7 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-
+import org.springframework.test.web.servlet.ResultMatcher;
 
 
 import java.util.ArrayList;
@@ -73,11 +73,12 @@ public class ControllerTest {
                 .content(objectMapper.writeValueAsString(payment)))
                 .andExpect(jsonPath("$.firstName", is(payment.getFirstName())))
                 .andExpect(jsonPath("$.lastName",is(payment.getLastName())))
-                .andExpect(jsonPath("$.transactionNumber",is(payment.getTransactionNumber())))
+                .andExpect(jsonPath("$.transactionNumber",is(payment.getTransactionNumber().intValue())))
                 .andExpect(jsonPath("$.amount",is(payment.getAmount())));
+
     }
 
-   /* @Test
+    @Test
     void ShouldRetrievePaymentById() throws Exception {
 
         Long paymentId = 5L;
@@ -88,12 +89,13 @@ public class ControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName", is(payment.getFirstName())))
                 .andExpect(jsonPath("$.lastName",is(payment.getLastName())))
-                .andExpect(jsonPath("$.transactionNumber",is(payment.getTransactionNumber())))
+                .andExpect(jsonPath("$.transactionNumber",is(payment.getTransactionNumber().intValue())))
                 .andExpect(jsonPath("$.amount",is(payment.getAmount())));
 
-    */
 
-   /* @Test
+    }
+
+    @Test
     void shouldReturn404WhenReturningNonExistingPayment() throws Exception {
 
         Long paymentId = 6L;
@@ -102,22 +104,22 @@ public class ControllerTest {
         this.mockMvc.perform(get("/api/payments/{id}", paymentId))
                 .andExpect(status().isNotFound());
     }
-    */
 
 
-    /*@Test
+
+    @Test
     void shouldUpdatePayment() throws Exception {
         Long paymentId = 12L;
         Payment payment = new Payment("Georges", "Washington", 11l,10.0);
 
-        given(repository.findById(paymentId)).willReturn(Optional.of(payment));
-        given(repository.save(any(Payment.class))).willAnswer((invocation) -> invocation.getArgument(0));
+        given(service.findPaymentById(paymentId)).willReturn(Optional.of(payment));
+        given(service.updatePayment(any(Payment.class))).willAnswer((invocation) -> invocation.getArgument(0));
 
-        this.mockMvc.perform(put("/api/payments/{id}", payment.getId())
+        this.mockMvc.perform(put("/api/payments/{id}", payment.getId()));
 
     }
 
-     */
+
 
 
 

@@ -1,12 +1,15 @@
 package com.portfolio.paymentapi.controller;
 
 import com.portfolio.paymentapi.entity.Payment;
+import com.portfolio.paymentapi.exceptions.ResourceNotFoundException;
 import com.portfolio.paymentapi.service.PaymentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -25,7 +28,7 @@ public class PaymentController {
         return ResponseEntity.ok().body(service.getAllPayments());
     }
 
-    @GetMapping("/paymentsByNumber")
+    @GetMapping("/paymentsByTransactionNumber")
     public ResponseEntity<List<Payment>> getPaymentsByTransactionNumber(@RequestParam Long transactionNumber) {
         return ResponseEntity.ok().body(service.findAllByTransactionNumber(transactionNumber));
     }
@@ -38,12 +41,24 @@ public class PaymentController {
 
     @GetMapping("/paymentByFullName")
     public ResponseEntity<Payment> getPaymentByFullName(@RequestParam String firstName, @RequestParam String lastName) {
-        return ResponseEntity.ok().body(service.findByFirstNameAndLastName(firstName, lastName));
+
+        Optional<Payment> payment = service.findByFirstNameAndLastName(firstName, lastName);
+        if (payment.isPresent()) {
+            return new ResponseEntity<>(payment.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("/payments/{id}")
     public ResponseEntity<Payment> getPaymentById(@PathVariable Long id) {
-        return ResponseEntity.ok().body(service.findPaymentById(id));
+
+        Optional<Payment> payment = service.findPaymentById(id);
+        if (payment.isPresent()) {
+            return new ResponseEntity<>(payment.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping("/payments")
